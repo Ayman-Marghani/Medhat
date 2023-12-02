@@ -40,8 +40,11 @@
     {
       "tag": "symptom",
       "patterns": [
-        "I have a/an",
-        "My _ hurts",
+        "I also have symptom",
+        "I do not have symptom",
+        "I have a symptom",
+        "I have an symptom",
+        "My body_part hurts",
         "My _ is _",
         "I am experiencing",
         "I am Feeling",
@@ -125,7 +128,7 @@
     },
     {
       "tag": "thanks",
-      "patterns": ["Thanks", "Thank you", "That is helpful", "Thanks a lot", "Appreciate it"],
+      "patterns": ["Thanks", "Thank you", "That is helpful", "Thanks a lot", "Appreciate it","goodjob", "good job"],
       "responses": ["Happy to help!", "Any time!", "My pleasure", "You're welcome!", "Glad I could assist."]
     },
     {
@@ -161,6 +164,20 @@
         "Why don't scientists trust atoms? Because they make up everything.",
         "What's orange and sounds like a parrot? A carrot.",
         "I used to play piano by ear, but now I use my hands and fingers."
+      ]
+    },
+    {
+      "tag": "feedback",
+      "patterns": [
+        "I want to provide feedback",
+        "Feedback",
+        "I'd like to give feedback",
+        "How can I share feedback"
+      ],
+      "responses": [
+        "Thank you for your feedback! We appreciate your input.",
+        "Feedback is important to us. Please share your thoughts.",
+        "We value your feedback. Let us know how we can improve."
       ]
     }
   ]

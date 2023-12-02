@@ -24,8 +24,10 @@ def connect(db_name, db_password):
         return None
 
 # Function to get data from the table
-def CallDB(conn,table_name, col_name):
+# select {col_name} from {table_name}
+def CallDB(table_name, col_name):
     try:
+        conn = connect("medhat_db", "medhat123")
         cursor = conn.cursor()
         cursor.execute(f"SELECT {col_name} FROM {table_name}")
         rows = cursor.fetchall()
@@ -35,16 +37,28 @@ def CallDB(conn,table_name, col_name):
         print("Error fetching data")
         print(e)
         return None
-# select {col_name} from {table_name}
+    
+def QueryDB(query):
+    try:
+        conn = connect("medhat_db", "medhat123")
+        cursor = conn.cursor()
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows
+    except psycopg2.Error as e:
+        print("Error fetching data")
+        print(e)
+        return None
 
 # Connecting to the database
 connection = connect("medhat_db", "medhat123")
 
 if connection is not None:
     # Getting data (list of tuples "rows")
-    DiseasesDB = CallDB(connection,"disease","*")
-    SymptomsDB = CallDB(connection,"symptom","*")
-    Associated_SymptomsDB = CallDB(connection,"has_symptoms","*")
+    #DiseasesDB = CallDB(connection,"disease","*")
+    #SymptomsDB = CallDB(connection,"symptom","*")
+    #Associated_SymptomsDB = CallDB(connection,"has_symptoms","*")
     # Closing the connection
     connection.close()
 else:
