@@ -1,7 +1,7 @@
 # import python libraries
 import json
 import spacy
-from nltk.stem.porter import PorterStemmer
+from nltk.stem.snowball import SnowballStemmer
 from spellchecker import SpellChecker
 import random
 from difflib import SequenceMatcher
@@ -10,7 +10,7 @@ from SQL.SQLConnection import *
 
 
 spell = SpellChecker()
-stemmer = PorterStemmer()
+stemmer = SnowballStemmer("english")
 # Load the English language model
 nlp = spacy.load("en_core_web_md")
 ######################################################################################################################################################
