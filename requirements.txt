@@ -1,0 +1,7 @@
+nltk
+json
+random
+spacy
+spellchecker
+psycopg2
+difflib
