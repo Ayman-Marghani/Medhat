@@ -40,18 +40,21 @@
     {
       "tag": "symptom",
       "patterns": [
-        "I also have symptom",
-        "I do not have symptom",
-        "I have a symptom",
-        "I have an symptom",
-        "My body_part hurts",
-        "My _ is _",
+        "I also have ",
+        "I do not have ",
+        "I have a ",
+        "I have an ",
+        "My hurts",
+        "My is",
         "I am experiencing",
         "I am Feeling",
         "I suffer from",
-        "I have _ symptom",
-        "I have the symptom of _",
-        "I think I might",
+        "I have ",
+        "I have the symptom of",
+        "I think I might have",
+        "I think I have",
+        "I might have",
+        "",
         "I'm not feeling well",
         "I'm not sure what's wrong",
         "Something's not right with my",
@@ -59,7 +62,8 @@
         "I'm dealing with",
         "I'm having issues with",
         "I'm not in great shape",
-        "I need advice on my"
+        "I need advice on my",
+        "I need help with "
       ],
       "responses": [
         "I'm not a doctor, but I can try to help. Can you tell me more about your symptoms?",
@@ -100,24 +104,24 @@
         "what is",
         "what is the description of",
         "describe",
-        "what does _ mean",
-        "I don't understand _",
+        "what does mean",
+        "I don't understand",
         "what is the meaning of",
         "Can you explain",
         "Tell me about",
         "Define",
-        "I'm not familiar with",
+        "I am not familiar with",
         "Help me understand",
         "Give me details on",
-        "Explain",
+        "Explain ",
         "What can you tell me about",
-        "Tell me more about"
+        "Tell me more about "
       ],
       "responses": ["ERROR: NO"]
     },
     {
       "tag": "goodbye",
-      "patterns": ["Bye", "See you later", "Goodbye", "Farewell", "Adios"],
+      "patterns": ["Bye", "See you later", "Goodbye", "Farewell", "Adios" , "quit" , "end" , "exit"],
       "responses": [
         "See you later, thanks for visiting",
         "Have a nice day",
@@ -142,10 +146,12 @@
         "how do I use you",
         "how do I use the chatbot",
         "I need assistance with you",
-        "I want the user manual"
+        "I want the user manual",
+        "I do not know what to do",
+        "what are your options"
       ],
       "responses": [
-        "I'm Medhat, A medical chatbot designed to help you identify what could be your disease/s based on your symptoms and then suggest possible courses of action accordingly\n"
+        "I'm Medhat, A medical chatbot designed to help you identify what could be your disease/s based on your symptoms and then suggest possible courses of action accordingly\nHere are the options for you to use Medhat:\n-You can converse with me ,greet, ask me questions and I can tell you jokes ;).\n-To start the diagnosis process, start by mentioning what symptoms you have [Ex: \"I have [symptom]\" ]\nYou could also ask \"What symptoms do I have\" to let Medhat automatically ask you.\n-You could ask for information about specific diseases, like their treatments , causes, details about them and their symptoms.\n-Say whenever you want to end the diagnosis, you could use words like \"end\" or \"quit\"\n-Medhat will try to search for closely matching diseases/symptoms if you misspell them."
       ]
     },
     {
@@ -153,6 +159,7 @@
       "patterns": [
         "Tell me a joke",
         "Tell me something funny",
+        "Can you tell me something funny",
         "Do you know a joke",
         "Make me laugh",
         "Give me a good joke",
@@ -165,6 +172,58 @@
         "What's orange and sounds like a parrot? A carrot.",
         "I used to play piano by ear, but now I use my hands and fingers."
       ]
+    },
+    {
+      "tag": "treatments",
+      "patterns": [
+        "what are the treatments for ",
+        "how can you cure ",
+        "how could you treat ",
+        "what is used to treat ",
+        "tell me more about the treatments of ",
+        "how is treated",
+        "what do I do if I have "
+      ],
+      "responses": ["ERROR: NO"]
+    },
+    {
+      "tag": "causes",
+      "patterns": [
+        "what are the causes of ",
+        "what could cause ",
+        "how could you get ",
+        "what can cause ",
+        "tell me more about the causes of ",
+        "how is caused",
+        "what makes you have ",
+        "how could one have "
+      ],
+      "responses": ["ERROR: NO"]
+    },
+    {
+      "tag": "associated_symptoms",
+      "patterns": [
+        "what are the symptoms of ",
+        "what are the side effects of ",
+        "how do you know you have ",
+        "how can I tell that I have ",
+        "tell me more about the symptoms of ",
+        "what symptoms are related to "
+      ],
+      "responses": ["ERROR: NO"]
+    },
+    {
+      "tag": "potential_symptoms",
+      "patterns": [
+        "what symptoms could I have ",
+        "what could be my symptoms ",
+        "I want you to make sure ",
+        "what other symptoms are there ",
+        "tell me more about my symptoms ",
+        "what symptoms are related to the ones I have",
+        "what other symptoms do I have"
+      ],
+      "responses": ["ERROR: NO"]
     },
     {
       "tag": "feedback",
