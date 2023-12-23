@@ -1,4 +1,5 @@
 # import python libraries
+from flask import Flask, request, jsonify
 import json
 import spacy
 import random
@@ -41,4 +42,11 @@ DiseasesDB = QueryDB("SELECT disease_id FROM diseases")
 Disease_Scores = {disease[0]: 100 for disease in DiseasesDB}
 del DiseasesDB
 user_symptoms = set([])
+
+
+global prev_context   
+prev_context = ""
+global response 
+response = ""
+
 

@@ -171,6 +171,7 @@ def init_db(db_name, db_password):
     connection.close()
 
 # database name and password
-DBname = "medhat_db"
-DBpassword = "medhat123"
-#init_db(DBname,DBpassword)
+
+DBname = input("Enter the database name: ")
+DBpassword = input("Enter the password for PostgrSQL: ")
+init_db(DBname,DBpassword)

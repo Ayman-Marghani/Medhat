@@ -147,17 +147,20 @@ def take_input():
 
 
 def print_response(response):
-    print(f"- Medhat: {response}")
+    output = f"- Medhat: {response}\n"
+    return output
     # OR for the app: send_response(response)
 
 def print_list(lst, replace = False):
     sz = len(lst)
+    output = ""
     for i in range(sz):
         if replace:
-            print(lst[i].replace("_", " "), end = '')
+            output += lst[i].replace("_", " ")
         else:
-            print(lst[i], end="")
+            output += lst[i]
         if (i < sz - 1):
-            print(" - ", end ="")
-    print("")
+            output += " - "
+    output += "\n"
+    return output
 

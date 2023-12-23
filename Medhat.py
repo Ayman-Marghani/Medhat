@@ -86,24 +86,25 @@ def recognize_intent(user_input):
 
 # Based on the diseases scores and user symptoms, gives the user a diagnosis
 def giveDiagnosis():
+    global response
     if len(user_symptoms) == 0:
-        print_response("\nI could not determine a diagnosis.")
-    print_response("Based on your given symptoms:-")
+        response += "\nI could not determine a diagnosis.\n"
+    response += "Based on your given symptoms:-\n"
     symptoms = list(user_symptoms)
     print_list(symptoms, True)
     top_diseases = sort_dictionary(Disease_Scores)[:3]
     top3 = [disease_id for disease_id, value in top_diseases if value > 100]
     QueryDB(f"INSERT INTO diagnoses(disease_id) values ({top3[0]});" , fetch = False)
     if len(top3) == 0:
-        print_response("\nI could not determine a diagnosis.")
+        response += "\nI could not determine a diagnosis.\n"
     else:
         diseases = []
-        print_response("\nYour most probable diseases are:-")
+        response += "\nYour most probable diseases are:-\n"
         for disease_id in top3:
             disease = QueryDB(f"SELECT disease_name FROM Diseases where disease_id = {disease_id};")
             diseases.append(disease[0][0])
         print_list(diseases)
-        print_response("With probabilties [respectively]")
+        response += "With probabilties [respectively]\n"
         sz = len(top3)
         for i in range(sz):
             probability = (Disease_Scores[top3[i]]-100)
@@ -113,41 +114,43 @@ def giveDiagnosis():
             elif probability < 20:
                 probability += 15
             if(i < sz-1):
-                print(f"{round(probability)}%, ")
+                response += f"{round(probability)}%,\n"
             else:
-                print(f"{round(probability)}%.")
+                response += f"{round(probability)}%.\n"
         treatments = QueryDB(f"SELECT treatments FROM Diseases where disease_name = '{diseases[0]}';")
         causes = QueryDB(f"SELECT causes FROM Diseases where disease_name = '{diseases[0]}';")
         if(treatments):
-            print_response(f"{diseases[0]} Treatments: \n{treatments[0][0]}")
+            response += f"{diseases[0]} Treatments: \n{treatments[0][0]}\n"
         if(causes):
-            print_response(f"{diseases[0]} Causes: \n{causes[0][0]}")
+            response += f"{diseases[0]} Causes: \n{causes[0][0]}\n"
         disease_properties = QueryDB(f"SELECT description,severity,specialist,frequency,contagiousness FROM Diseases where disease_name = '{diseases[0]}';")
         description = disease_properties[0][0]
         severity = disease_properties[0][1]
         specialist = disease_properties[0][2]
         frequency = disease_properties[0][3]
         contagiousness = disease_properties[0][4]
-        print_response(f"For {diseases[0]}, its details: \n{description}")
-        print_response(f"{diseases[0]} is a {frequency.lower()} disease that is {severity.lower()}")
+        response += f"For {diseases[0]}, its details: \n{description}\n"
+        response += f"{diseases[0]} is a {frequency.lower()} disease that is {severity.lower()}\n"
         if(contagiousness.lower() == 'yes'):
-            print_response(f"{diseases[0]} is a contagious disease/condition, please take the necessary precautions.")
-        print_response(f"For {diseases[0]}, I recommend visiting a/an {specialist} for a checkup.")
+            response += f"{diseases[0]} is a contagious disease/condition, please take the necessary precautions.\n"
+        response += f"For {diseases[0]}, I recommend visiting a/an {specialist} for a checkup.\n"
         remaining = diseases[1:3]
         if len(remaining) > 0:
-            print_response("Would you like to know more about the other diseases?")
+            response += "Would you like to know more about the other diseases?\n"
         else:
             return
-        user_input = format(take_input())
+        #user_input = format(take_input())
+        user_input = str(request.args['query'])
+        user_input = format(user_input.lower())
         for word in user_input:
             if (word in affirmations):
                 for disease in remaining:
                     treatments = QueryDB(f"SELECT treatments FROM Diseases where disease_name = '{disease}';")
                     if (treatments):
-                        print_response(f"{diseases[0]} Treatments: \n{treatments[0][0]}")
+                        response += f"{diseases[0]} Treatments: \n{treatments[0][0]}\n"
                     causes = QueryDB(f"SELECT causes FROM Diseases where disease_name = '{disease}';")
                     if (causes):
-                        print_response(f"{diseases[0]} Causes: \n{causes[0][0]}")
+                        response += f"{diseases[0]} Causes: \n{causes[0][0]}\n"
 
                     disease_properties = QueryDB( f"SELECT description,severity,specialist,frequency,contagiousness FROM Diseases where disease_name = '{disease}';")
                     description = disease_properties[0][0]
@@ -155,29 +158,32 @@ def giveDiagnosis():
                     specialist = disease_properties[0][2]
                     frequency = disease_properties[0][3]
                     contagiousness = disease_properties[0][4]
-                    print_response(f"For {disease}, its details: \n{description}")
-                    print_response(f"{disease} is a {frequency.lower()} disease that is {severity.lower()}")
+                    response += f"For {disease}, its details: \n{description}\n"
+                    response += f"{disease} is a {frequency.lower()} disease that is {severity.lower()}\n"
                     if (contagiousness.lower() == 'yes'):
-                        print_response(f"{disease} is a contagious disease/condition, please take the necessary precautions.")
-                    print_response(f"For {disease}, I recommend visiting a/an {specialist} for a checkup.")
+                        response += f"{disease} is a contagious disease/condition, please take the necessary precautions.\n"
+                    response += f"For {disease}, I recommend visiting a/an {specialist} for a checkup.\n"
                 break
             elif (word in negations):
                 break
 
 # Get the user back on track if he doesn't continue listing symptoms
 def handleInterruption():
+    global response
     # Could recognize intent and answer it first then handle interruption
-    print_response("I'm still in the process of finishing your diagnosis, would you like to recieve it? (y/n)")
-    user_input = process_input(take_input())
+    response += "I'm still in the process of finishing your diagnosis, would you like to recieve it? (y/n)\n"
+    #user_input = process_input(take_input())
+    user_input = str(request.args['query'])
+    user_input = process_input(user_input.lower())
     for word in user_input:
         if (word in affirmations):
             #enhanceDiagnosis(findPotentialSymptoms())
             giveDiagnosis()
             return ""
         elif (word in negations):
-            print_response("Terminating diagnosis, Progress is not saved")
+            response += "Terminating diagnosis, Progress is not saved\n"
             return "quit"
-    print_response("Sorry, I did not understand that.")
+    response += "Sorry, I did not understand that.\n"
     return ""
 
 
@@ -226,11 +232,14 @@ def updateDiseasesScores(symptom, negation_parameter):
 
 # At the end of the diagnosis, ask for the potential symptoms to reduce error rate of diagnosis.
 def enhanceDiagnosis(potential_symptoms):
-    print_response("Would you say you experienced the following symptoms lately?")
+    global response
+    response += "Would you say you experienced the following symptoms lately?\n"
     for symptom in potential_symptoms:
         symptom_print = symptom.replace("_", " ")
-        print_response(f"{symptom_print} ?")
-        user_input = take_input()
+        response += f"{symptom_print} ?\n"
+        #user_input = take_input()
+        user_input = str(request.args['query'])
+        user_input = user_input.lower()
         for neg in negations:
             if neg in user_input:
                 updateDiseasesScores(symptom, -1)
@@ -244,21 +253,25 @@ def enhanceDiagnosis(potential_symptoms):
 
 
 def findMatchingDisease(user_input, user_intent, parameter):
+    global response
     user_input = remove_patterns(user_input, user_intent)
     DiseasesDB_names = QueryDB("SELECT disease_name FROM diseases")
     diseases_similarity = {disease[0]: similarity_ratio(user_input, disease[0].lower()) for disease in DiseasesDB_names}
     top_diseases = sort_dictionary(diseases_similarity)[:parameter]
     for disease in top_diseases:
-        print_response(f'do you mean {disease[0]}?')
-        user_input = format(take_input())
+        response += f"do you mean {disease[0]}?\n"
+        #user_input = format(take_input())
+        user_input = str(request.args['query'])
+        user_input = format(user_input.lower())
         for word in user_input:
             if word in affirmations:
                 return disease[0]
     if (user_intent != 'symptom'):
-        print_response("I could not recognize that disease,try again.")
+        response += "I could not recognize that disease,try again.\n"
     return None
 
 def findMatchingSymptoms(user_input, user_intent, parameter):
+    global response
     user_input = remove_patterns(user_input, user_intent)
     SymptomDB_names = QueryDB("SELECT symptom_name FROM symptoms")
     symptoms_similarity = {symptom[0]: similarity_ratio(user_input, symptom[0].lower()) for symptom in SymptomDB_names}
@@ -266,15 +279,17 @@ def findMatchingSymptoms(user_input, user_intent, parameter):
     for symptom in top_symptoms:
         print(f"symptom ok:  {symptom} | {user_symptoms}")
         if symptom[0] in user_symptoms:
-            print_response("This symptom was already detected!")
+            response += "This symptom was already detected!\n"
             continue
-        print_response(f'do you mean {symptom[0]}?')
-        user_input = format(take_input())
+        response += f"do you mean {symptom[0]}?\n"
+        #user_input = format(take_input())
+        user_input = str(request.args['query'])
+        user_input = format(user_input.lower())
         for word in user_input:
             if word in affirmations:
                 return symptom[0]
     if (user_intent != 'symptom'):
-        print_response("I could not recognize that symptom,try again.")
+        response += "I could not recognize that symptom,try again.\n"
     return None
 
 # REFACTORING: These 2 functions could be made as a single function but you need to provide and additional input: symptom or disease
@@ -282,12 +297,14 @@ def findMatchingSymptoms(user_input, user_intent, parameter):
 
 # Given a certain intent, produce a random response listed in the JSON file.
 def giveResponse(tag):
+    global response
     for intent in intents['intents']:
         if intent["tag"] == tag:
-            print_response(random.choice(intent["responses"]))
+            response += random.choice(intent["responses"])
 
 
 def verifyDisease(disease):
+    global response
     symptoms = QueryDB(
         f"SELECT S.symptom_name FROM Has_Symptoms HS , Diseases D, Symptoms S WHERE D.disease_name = '{disease}' AND HS.disease_id = D.disease_id AND S.symptom_id = HS.symptom_id;")
     symptoms = [s[0] for s in symptoms]
@@ -295,16 +312,17 @@ def verifyDisease(disease):
     disease_id = QueryDB(f"SELECT D.disease_id FROM Diseases D WHERE D.disease_name = '{disease}'")[0]
     #print(Disease_Scores[disease_id[0]])
     if (Disease_Scores[disease_id[0]] > 110):
-        print_response(f"It is probable that you have {disease}. I suggest visiting a specialized doctor")
+        response += f"It is probable that you have {disease}. I suggest visiting a specialized doctor\n"
     elif (Disease_Scores[disease_id[0]] > 100):
-        print_response(f"It is improbable that you have {disease}. I suggest performing a check-up")
+        response += f"It is improbable that you have {disease}. I suggest performing a check-up\n"
     else:
-        print_response(f"You have a low chance of having {disease}. It is probably nothing serious but make sure to consult a doctor")
+        response += f"You have a low chance of having {disease}. It is probably nothing serious but make sure to consult a doctor\n"
 
 
 # Given the user intent, and the context of the previous conversation [Last intent], generate a fitting response.
 # This function handles the dialogue flow for the chatbot.
 def generate_response(user_input, context, diagnosis_flag):
+    global response
     user_intent = recognize_intent(user_input)
     if user_intent:  # If the intent is recognized
         if user_intent == "goodbye":    #If the user means to end current diagnosis/quit program.
@@ -343,17 +361,17 @@ def generate_response(user_input, context, diagnosis_flag):
                         updateDiseasesScores(matching_symptom , 1)
                         user_symptoms.add(matching_symptom)
                         # should print a response or change the user intent here <<<------
-                    else: print_response("I could not recognize that symptom/disease,try again.")
+                    else: response += "I could not recognize that symptom/disease,try again.\n"
         elif user_intent == "diagnosis":    #if the user wants to finish the diagnosis process.
             if (len(user_symptoms) > 0):
                 #enhanceDiagnosis(findPotentialSymptoms())
                 giveDiagnosis()
                 diagnosis_flag = True
             else:
-                print_response("I need information to try and diagnose you, could you provide your symptoms?")
+                response += "I need information to try and diagnose you, could you provide your symptoms?\n"
         elif user_intent == "potential_symptoms": #The user wants to know other symptoms they could have.
             enhanceDiagnosis(findPotentialSymptoms())
-            print_response("These were the most likely symptoms you could have.")
+            response += "These were the most likely symptoms you could have.\n"
             #giveDiagnosis()
             diagnosis_flag = True
         elif user_intent == "description":
@@ -363,67 +381,67 @@ def generate_response(user_input, context, diagnosis_flag):
                     description = \
                     QueryDB(f"SELECT D.description FROM Diseases D WHERE D.disease_name = '{disease}';")[0][0]
                     if (description):
-                        print_response(f"{disease} Description:\n {description}")
+                        response += f"{disease} Description:\n {description}\n"
                     else:
-                        print_response(f"There is no description for this disease in the database.")
+                        response += f"There is no description for this disease in the database.\n"
             else:
                 matched_disease = findMatchingDisease(user_input, user_intent, 3)
                 if (matched_disease):
                     description = \
                     QueryDB(f"SELECT D.description FROM Diseases D WHERE D.disease_name = '{matched_disease}';")[0][0]
                     if (description):
-                        print_response(f"{matched_disease} Description:\n {description}")
+                        response += f"{matched_disease} Description:\n {description}\n"
                     else:
-                        print_response(f"There is no description for this disease in the database.")
+                        response += f"There is no description for this disease in the database.\n"
         elif user_intent == "treatments":
             detected_diseases = detect_diseases(user_input)
             if (len(detected_diseases) > 0):
                 for disease in detected_diseases:
                     treatments = QueryDB(f"SELECT D.treatments FROM Diseases D WHERE D.disease_name = '{disease}';")[0][0]
                     if (treatments):
-                        print_response(f"{disease} Treatments:\n {treatments}")
+                        response += f"{disease} Treatments:\n {treatments}\n"
                     else:
-                        print_response(f"There is no Treatments for this disease in the database.")
+                        response += f"There is no Treatments for this disease in the database.\n"
             else:
                 matched_disease = findMatchingDisease(user_input, user_intent, 3)
                 if (matched_disease):
                     treatments = \
                     QueryDB(f"SELECT D.treatments FROM Diseases D WHERE D.disease_name = '{matched_disease}';")[0][0]
                     if (treatments):
-                        print_response(f"{matched_disease} Treatments:\n {treatments}")
+                        response += f"{matched_disease} Treatments:\n {treatments}\n"
                     else:
-                        print_response(f"There is no Treatments for this disease in the database.")
+                        response += f"There is no Treatments for this disease in the database.\n"
         elif user_intent == "causes":
             detected_diseases = detect_diseases(user_input)
             if (len(detected_diseases) > 0):
                 for disease in detected_diseases:
                     causes = QueryDB(f"SELECT D.causes FROM Diseases D WHERE D.disease_name = '{disease}';")[0][0]
                     if (causes):
-                        print_response(f"{disease} Causes:\n {causes}")
+                        response += f"{disease} Causes:\n {causes}\n"
                     else:
-                        print_response(f"There is no Causes for this disease in the database.")
+                        response += f"There is no Causes for this disease in the database.\n"
             else:
                 matched_disease = findMatchingDisease(user_input, user_intent, 3)
                 if (matched_disease):
                     causes = QueryDB(f"SELECT D.causes FROM Diseases D WHERE D.disease_name = '{matched_disease}';")[0][0]
                     if (causes):
-                        print_response(f"{matched_disease} Causes:\n {causes}")
+                        response += f"{matched_disease} Causes:\n {causes}\n"
                     else:
-                        print_response(f"There is no Causes for this disease in the database.")
+                        response += f"There is no Causes for this disease in the database.\n"
         elif user_intent == "associated_symptoms":
             detected_diseases = detect_diseases(user_input)
             if (len(detected_diseases) > 0):
                 for disease in detected_diseases:
                     symptoms = QueryDB(
                         f"SELECT S.symptom_name FROM Symptoms S, Has_Symptoms HS , Diseases D WHERE D.disease_name = '{disease}' AND HS.symptom_id = S.symptom_id AND D.disease_id = HS.disease_id;")
-                    print_response(f"The symptoms for {disease} are: ")
+                    response += f"The symptoms for {disease} are: \n"
                     print_list(symptoms)
             else:
                 matched_disease = findMatchingDisease(user_input, user_intent, 3)
                 if (matched_disease):
                     symptoms = QueryDB(
                         f"SELECT S.symptom_name FROM Symptoms S, Has_Symptoms HS , Diseases D WHERE D.disease_name = '{matched_disease}' AND HS.symptom_id = S.symptom_id AND D.disease_id = HS.disease_id;")
-                    print_response(f"The symptoms for {matched_disease} are: ")
+                    response += f"The symptoms for {matched_disease} are: \n"
                     print_list(symptoms)
 
         else:
@@ -437,28 +455,36 @@ def generate_response(user_input, context, diagnosis_flag):
         if (len(detected_symptoms) > 0):
             giveResponse("symptom")
         else:
-            print_response("Sorry, I did not understand that.")
+            response += "Sorry, I did not understand that.\n"
     return user_intent, diagnosis_flag
 
 
-# Main function
-def main():
+app = Flask(__name__)
+
+
+@app.route('/api', methods = ['GET'])
+def return_response():
+    d = {}
+
+    global prev_context
+    global response
+
+    response = ""
     diagnosis_flag = False
-    # print Welcome Message
-    print_response("Hi how are you?")
-    context = "greeting"
-    # Chatbot Main loop
-    while True:
-        user_input = process_input(take_input())
-        context, diagnosis_flag = generate_response(user_input, context, diagnosis_flag)
-        if context == "quit":
-            break
+
+    if prev_context == "":
+       context = "greeting"
+    else:
+       context = prev_context
+    
+    user_input = str(request.args['query'])
+    user_input = process_input(user_input.lower())
+    prev_context, diagnosis_flag = generate_response(user_input, context, diagnosis_flag)
+
+    d['output'] = response
+    return d
 
 
-# Call the main function
-main()
+if __name__ =="__main__":
+    app.run()
 
-'''
-input processing pipeline: correct_spelling -> format
-Refactor all duplicated code
-'''
