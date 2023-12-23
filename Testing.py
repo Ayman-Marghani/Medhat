@@ -41,7 +41,7 @@ def compute_similarity(pattern, user_input):
     return similarity
 sentence = "tell me something funny"
 
-print(compute_similarity(sentence, input("user: ")))
+#print(compute_similarity(sentence, input("user: ")))
 
 '''
 Ideas:
@@ -82,4 +82,11 @@ print(common_characters(user_input, sentence))
 '''
 
 
-print(stem("breathlessness"))
+# tiredness -> tired
+# tired -> tire
+while True:
+    inpt = input("Input: ")
+    print([lemmatize(word) for word in format(inpt)])
+
+#print(QueryDB("select * from diseases"))
+

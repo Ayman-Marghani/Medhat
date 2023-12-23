@@ -1,16 +1,19 @@
 # import python libraries
 import json
 import spacy
+import random
+import nltk
+from nltk.stem import WordNetLemmatizer
 from nltk.stem.snowball import SnowballStemmer
 from spellchecker import SpellChecker
-import random
 from difflib import SequenceMatcher
-
-from SQL.SQLConnection import *
+import math
+from SQLConnection import *
 
 
 spell = SpellChecker()
 stemmer = SnowballStemmer("english")
+wnl = WordNetLemmatizer()
 # Load the English language model
 nlp = spacy.load("en_core_web_md")
 ######################################################################################################################################################
@@ -31,10 +34,11 @@ pronouns = ['i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us
             'ours', 'theirs', 'myself', 'yourself', 'himself', 'herself', 'itself', 'ourselves',
             'yourselves', 'themselves']
 
-prepositions = ['at', 'but', 'by', 'for', 'from', 'in', 'of', 'off', 'on', 'out', 'to', 'a', 'an' , 'with']
+prepositions = ['at', 'but', 'by', 'for', 'from', 'in', 'of', 'off', 'on', 'out', 'to', 'a', 'an' , 'with','during' , 'around' , 'when' , 'after', 'before' , 'outside' , 'inside' , 'over']
 ######################################################################################################################################################
 # Data from the Database
-DiseasesDB = CallDB("disease", "disease_id")
+DiseasesDB = QueryDB("SELECT disease_id FROM diseases")
 Disease_Scores = {disease[0]: 100 for disease in DiseasesDB}
 del DiseasesDB
 user_symptoms = set([])
+

@@ -3,5 +3,6 @@ json
 random
 spacy
 spellchecker
+pyspellchecker
 psycopg2
 difflib

@@ -4,23 +4,40 @@ from Data import *
 ######################################################################################################################################################
 ############################## Helper Functions ##############################
 
-def similar(a, b):
+def similarity_ratio(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 # this function sorts a dictionary based on the values
-def sortDictionary(dict):
+# returns a list of pairs (key, value)
+def sort_dictionary(dict):
     return sorted(dict.items(), key=lambda x: x[1], reverse=True)
 
 def remove_substrings(input_list):
-    new_list = input_list.copy()  # Create a new list to avoid modifying the input directly
     for symptom in input_list:
         for symptom2 in input_list:
             if symptom != symptom2:
-                if stem(symptom) in symptom2:
-                    new_list.remove(symptom)
+                remove_flag = True
+                for w in lemmatize(symptom):
+                    if w not in symptom2:
+                        remove_flag = False
+                        break
+                if remove_flag:
+                    input_list.remove(symptom)
                     break  # Exit the inner loop after removal
-    return new_list
+    return input_list
 
+def remove_patterns(user_input, user_intent):
+    # remove pattern words from user_input
+    for intent in intents['intents']:
+        if intent["tag"] == user_intent:
+            for pattern in intent['patterns']:
+                formatted_pattern = format(pattern)
+                for word in formatted_pattern:
+                    if word in user_input:
+                        user_input.remove(word)
+
+    user_input = ' '.join(user_input)
+    return user_input
 
 # Using spacy, computes similarity between 2 sentences
 def compute_similarity(pattern, user_input):
@@ -101,19 +118,13 @@ def removeIgnored(sentence):
 def tokenize(sentence):
     return sentence.lower().split()
 
-
+def lemmatize(text):
+    doc = nlp(text)
+    lemmatized_text = " ".join([token.lemma_ for token in doc])
+    return lemmatized_text
 # this function calls stem function on a string
 def stem(word):
     return stemmer.stem(word.lower())
-
-
-# Input: a string containing the user's input
-# Output: list of all the words (strings) in the sentence after applying tokenization and stemming
-
-#def formatStem(sentence):
- #   formatted = contraction_transformer(tokenize(removeIgnored(sentence)))
-  #  return [stem(word.replace("'", "")) for word in formatted]
-
 
 def format(sentence):
     formatted = contraction_transformer(tokenize(removeIgnored(sentence)))
@@ -136,7 +147,7 @@ def take_input():
 
 
 def print_response(response):
-    print(f"Medhat: {response}")
+    print(f"- Medhat: {response}")
     # OR for the app: send_response(response)
 
 def print_list(lst, replace = False):
@@ -148,4 +159,5 @@ def print_list(lst, replace = False):
             print(lst[i], end="")
         if (i < sz - 1):
             print(" - ", end ="")
+    print("")
 
