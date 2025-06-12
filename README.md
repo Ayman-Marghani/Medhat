@@ -6,6 +6,9 @@ Medhat is a medical chatbot application developed to assist users in obtaining i
 
 Medhat aims to provide users with a personalized communication channel where they can inquire about specific medical issues, receive information about diseases and symptoms, and even request potential diagnoses based on the symptoms provided.
 
+## Demo
+https://github.com/user-attachments/assets/968189ec-db8e-47ad-852a-1c84aae5b63f
+
 ### Key Features
 
 - **User-Driven Inquiry**: Users can input symptoms, ask about diseases, or seek potential diagnoses, facilitating personalized medical interactions.
@@ -35,6 +38,10 @@ Medhat is a Python-based chatbot application integrated with Flutter for its use
   ```
 3. Install required Python dependencies:
   ```bash
+
+https://github.com/user-attachments/assets/344f68ce-8f34-452f-8fd2-42668ea2ec7e
+
+
   pip install -r requirements.txt
   ```
   - Ensure you have downloaded the English model for spaCy:
