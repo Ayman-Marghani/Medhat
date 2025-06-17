@@ -20,6 +20,10 @@ https://github.com/user-attachments/assets/968189ec-db8e-47ad-852a-1c84aae5b63f
 
 Medhat is a Python-based chatbot application integrated with Flutter for its user interface. Follow the steps below to set up and run the application:
 
+## Presentation
+
+Here is a professional prsentation, demonstrating the project in a concise and effective manner: [Medhat Presentation.pptx](https://github.com/user-attachments/files/20779495/Medhat.Presentation.pptx)
+
 ### Prerequisites
 
 - Python 3.7 (or above)
